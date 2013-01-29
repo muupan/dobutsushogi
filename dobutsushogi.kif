@@ -60,13 +60,13 @@
 (row 4)
 
 ; order of columns
+(succ_col a b)
+(succ_col b c)
+
+; order of rows
 (succ_row 1 2)
 (succ_row 2 3)
 (succ_row 3 4)
-
-; order of rows
-(succ_col a b)
-(succ_col b c)
 
 ; definition of cell, which consists of column and row
 (<= (cell ?col ?row)
@@ -296,9 +296,9 @@
 
 ; captured pieces will be in hand
 (<= (next (hand ?role ?kind ?after))
+    (move_and_got_piece ?role ?kind)
     (true (hand ?role ?kind ?before))
-    (succ_number ?before ?after)
-    (move_and_got_piece ?role ?kind))
+    (succ_number ?before ?after))
 
 ; putting a piece into board
 (<= (next (board ?col_to ?row_to ?piece))
