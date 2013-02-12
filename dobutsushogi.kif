@@ -70,57 +70,57 @@
 
 ; definition of cell, which consists of column and row
 (<= (cell ?col ?row)
-\t(col ?col)
-\t(row ?row))
+	(col ?col)
+	(row ?row))
 
 ; distinction betweel two cells
 (<= (distinct_cell ?col1 ?row1 ?col2 ?row2)
-\t(cell ?col1 ?row1)
-\t(cell ?col2 ?row2)
-\t(or (distinct ?col1 ?col2)
-\t\t(distinct ?row1 ?row2)))
+	(cell ?col1 ?row1)
+	(cell ?col2 ?row2)
+	(or (distinct ?col1 ?col2)
+		(distinct ?row1 ?row2)))
 
 ; acjacency between two columns
 (<= (adjacent_col ?n ?m)
-\t(or (succ_col ?n ?m)
-\t\t(succ_col ?m ?n)))
+	(or (succ_col ?n ?m)
+		(succ_col ?m ?n)))
 
 ; adjacency between two rows
 (<= (adjacent_row ?n ?m)
-\t(or (succ_row ?n ?m)
-\t\t(succ_row ?m ?n)))
+	(or (succ_row ?n ?m)
+		(succ_row ?m ?n)))
 
 ; sameness between two columns
 (<= (same_col ?col_from ?col_to)
-\t(col ?col_from)
+	(col ?col_from)
 	(col ?col_to)
 	(not (distinct ?col_from ?col_to)))
 
 ; sameness between two rows
 (<= (same_row ?row_from ?row_to)
-\t(row ?row_from)
+	(row ?row_from)
 	(row ?row_to)
 	(not (distinct ?row_from ?row_to)))
 
 ; diagonal adjacency between two cells
 (<= (diagonally_adjacent ?col_from ?row_from ?col_to ?row_to)
-\t(adjacent_col ?col_from ?col_to)
-\t(adjacent_row ?row_from ?row_to))
+	(adjacent_col ?col_from ?col_to)
+	(adjacent_row ?row_from ?row_to))
 
 ; vertical adjacency between two cells
 (<= (vertically_adjacent ?col_from ?row_from ?col_to ?row_to)
-\t(adjacent_row ?row_from ?row_to)
-\t(same_col ?col_from ?col_to))
+	(adjacent_row ?row_from ?row_to)
+	(same_col ?col_from ?col_to))
 
 ; horizontal adjacency between two cells
 (<= (horizontally_adjacent ?col_from ?row_from ?col_to ?row_to)
-\t(adjacent_col ?col_from ?col_to)
-\t(same_row ?row_from ?row_to))
+	(adjacent_col ?col_from ?col_to)
+	(same_row ?row_from ?row_to))
 
 ; diagonal adjacency between two cells, the latter of which is in front of the former
 (<= (forward_diagonally_adjacent ?role ?col_from ?row_from ?col_to ?row_to)
-\t(adjacent_col ?col_from ?col_to)
-\t(front_row ?role ?row_from ?row_to))
+	(adjacent_col ?col_from ?col_to)
+	(front_row ?role ?row_from ?row_to))
 
 ; pieces
 (piece s_chick)
@@ -236,9 +236,9 @@
 
 ; definition of front row, which differes between sente and gote
 (<= (front_row sente ?row_from ?row_to)
-\t(succ_row ?row_from ?row_to))
+	(succ_row ?row_from ?row_to))
 (<= (front_row gote ?row_from ?row_to)
-\t(succ_row ?row_to ?row_from))
+	(succ_row ?row_to ?row_from))
 
 ; opponent roles
 (opponent sente gote)
@@ -256,20 +256,20 @@
 
 ; non-chick piece will just move between two cells
 (<= (next (board ?col_to ?row_to ?piece))
-\t(does ?role (move ?col_from ?row_from ?col_to ?row_to ?kind))
-\t(true (board ?col_from ?row_from ?piece))
+	(does ?role (move ?col_from ?row_from ?col_to ?row_to ?kind))
+	(true (board ?col_from ?row_from ?piece))
 	(piece_kind ?piece ?kind)
 	(own ?role ?piece)
-\t(or (distinct ?kind chick)
-\t\t(not (back_rank ?role ?row_to))))
+	(or (distinct ?kind chick)
+		(not (back_rank ?role ?row_to))))
 
 ; chick will turn into hen when it will be in back rank
 (<= (next (board ?col_to ?row_to ?piece_after))
-\t(does ?role (move ?col_from ?row_from ?col_to ?row_to chick))
-\t(true (board ?col_from ?row_from ?piece_before))
+	(does ?role (move ?col_from ?row_from ?col_to ?row_to chick))
+	(true (board ?col_from ?row_from ?piece_before))
 	(role_kind_piece ?role chick ?piece_before)
 	(role_kind_piece ?role hen ?piece_after)
-\t(back_rank ?role ?row_to))
+	(back_rank ?role ?row_to))
 
 ; a starting point of move will be empty
 (<= (next (board ?col_from ?row_from empty))
@@ -277,9 +277,9 @@
 
 ; switch control
 (<= (next (control sente))
-\t(true (control gote)))
+	(true (control gote)))
 (<= (next (control gote))
-\t(true (control sente)))
+	(true (control sente)))
 
 ; next step
 (<= (next (step ?next_step))
@@ -288,47 +288,47 @@
 
 ; whether or not role moved its piece and captured its opponent's piece
 (<= (move_and_got_piece ?role ?kind)
-\t(does ?role (move ?col_from ?row_from ?col_to ?row_to ?any_kind))
-\t(true (board ?col_to ?row_to ?opp_piece))
-\t(opponent ?role ?opponent)
+	(does ?role (move ?col_from ?row_from ?col_to ?row_to ?any_kind))
+	(true (board ?col_to ?row_to ?opp_piece))
+	(opponent ?role ?opponent)
 	(own ?opponent ?opp_piece)
 	(piece_kind_in_hand ?opp_piece ?kind))
 
 ; captured pieces will be in hand
 (<= (next (hand ?role ?kind ?after))
-\t(true (hand ?role ?kind ?before))
+	(true (hand ?role ?kind ?before))
 	(move_and_got_piece ?role ?kind)
-\t(succ_number ?before ?after))
+	(succ_number ?before ?after))
 
 ; putting a piece into board
 (<= (next (board ?col_to ?row_to ?piece))
-\t(does ?role (put ?col_to ?row_to ?kind))
+	(does ?role (put ?col_to ?row_to ?kind))
 	(role_kind_piece ?role ?kind ?piece))
 
 ; putting a piece into board will decrease pieces in hand
 (<= (next (hand ?role ?kind ?after))
-\t(does ?role (put ?col ?row ?kind))
-\t(true (hand ?role ?kind ?before))
-\t(succ_number ?after ?before))
+	(does ?role (put ?col ?row ?kind))
+	(true (hand ?role ?kind ?before))
+	(succ_number ?after ?before))
 
 ; a state of a cell will remain the same when irrelevant piece-moving is made
 (<= (next (board ?col ?row ?piece))
 	(true (board ?col ?row ?piece))
-\t(does ?any_role (move ?col_from ?row_from ?col_to ?row_to ?any_kind))
-\t(distinct_cell ?col ?row ?col_from ?row_from)
-\t(distinct_cell ?col ?row ?col_to ?row_to))
+	(does ?any_role (move ?col_from ?row_from ?col_to ?row_to ?any_kind))
+	(distinct_cell ?col ?row ?col_from ?row_from)
+	(distinct_cell ?col ?row ?col_to ?row_to))
 
 ; a state of a cell will remain the same when irrelevant piece-putting is made
 (<= (next (board ?col ?row ?piece))
-\t(true (board ?col ?row ?piece))
+	(true (board ?col ?row ?piece))
 	(does ?any_role (put ?col_to ?row_to ?any_kind))
 	(distinct_cell ?col ?row ?col_to ?row_to))
 
 ; whether or not the captured piece is of a certain kind
 (<= (move_and_got_other_piece ?role ?kind)
-\t(move_and_got_piece ?role ?other_kind)
+	(move_and_got_piece ?role ?other_kind)
 	(kind ?kind)
-\t(distinct ?kind ?other_kind))
+	(distinct ?kind ?other_kind))
 
 ; whether or not the move-maker captured any piece
 (<= (move_and_got_no_piece ?role)
@@ -342,13 +342,13 @@
 	(distinct ?kind ?other_kind))
 
 ; a piece in hand will remain the same when
-;\t 1) capturing a piece of the other kind
-;\t 2) capturing no piece
-;\t 3) putting a piece of the other kind
-;\t 4) noop
+;	 1) capturing a piece of the other kind
+;	 2) capturing no piece
+;	 3) putting a piece of the other kind
+;	 4) noop
 (<= (next (hand ?role ?kind ?n))
-\t(true (hand ?role ?kind ?n))
-\t(or (move_and_got_other_piece ?role ?kind)
+	(true (hand ?role ?kind ?n))
+	(or (move_and_got_other_piece ?role ?kind)
 		(move_and_got_no_piece ?role)
 		(put_other_piece ?role ?kind)
 		(does ?role noop)))
@@ -373,56 +373,56 @@
 
 ; moving chick
 (<= (legal ?role (move ?col_from ?row_from ?col_to ?row_to chick))
-\t(true (control ?role))
+	(true (control ?role))
 	(cell_piece_kind ?role ?col_from ?row_from ?piece chick)
 	(cell_empty_or_opponent_piece ?role ?col_to ?row_to)
-\t(front_row ?role ?row_from ?row_to)
+	(front_row ?role ?row_from ?row_to)
 	(same_col ?col_from ?col_to))
 
 ; moving elephant
 (<= (legal ?role (move ?col_from ?row_from ?col_to ?row_to elephant))
-\t(true (control ?role))
+	(true (control ?role))
 	(cell_piece_kind ?role ?col_from ?row_from ?piece elephant)
 	(cell_empty_or_opponent_piece ?role ?col_to ?row_to)
-\t(diagonally_adjacent ?col_from ?row_from ?col_to ?row_to))
+	(diagonally_adjacent ?col_from ?row_from ?col_to ?row_to))
 
 ; moving giraffe
 (<= (legal ?role (move ?col_from ?row_from ?col_to ?row_to giraffe))
-\t(true (control ?role))
+	(true (control ?role))
 	(cell_piece_kind ?role ?col_from ?row_from ?piece giraffe)
 	(cell_empty_or_opponent_piece ?role ?col_to ?row_to)
-\t(or (vertically_adjacent ?col_from ?row_from ?col_to ?row_to)
-\t\t(horizontally_adjacent ?col_from ?row_from ?col_to ?row_to)))
+	(or (vertically_adjacent ?col_from ?row_from ?col_to ?row_to)
+		(horizontally_adjacent ?col_from ?row_from ?col_to ?row_to)))
 
 ; moving lion
 (<= (legal ?role (move ?col_from ?row_from ?col_to ?row_to lion))
-\t(true (control ?role))
+	(true (control ?role))
 	(cell_piece_kind ?role ?col_from ?row_from ?piece lion)
 	(cell_empty_or_opponent_piece ?role ?col_to ?row_to)
-\t(or (vertically_adjacent ?col_from ?row_from ?col_to ?row_to)
-\t\t(horizontally_adjacent ?col_from ?row_from ?col_to ?row_to)
-\t\t(diagonally_adjacent ?col_from ?row_from ?col_to ?row_to)))
+	(or (vertically_adjacent ?col_from ?row_from ?col_to ?row_to)
+		(horizontally_adjacent ?col_from ?row_from ?col_to ?row_to)
+		(diagonally_adjacent ?col_from ?row_from ?col_to ?row_to)))
 
 ; moving hen
 (<= (legal ?role (move ?col_from ?row_from ?col_to ?row_to hen))
-\t(true (control ?role))
+	(true (control ?role))
 	(cell_piece_kind ?role ?col_from ?row_from ?piece hen)
 	(cell_empty_or_opponent_piece ?role ?col_to ?row_to)
-\t(or (vertically_adjacent ?col_from ?row_from ?col_to ?row_to)
-\t\t(horizontally_adjacent ?col_from ?row_from ?col_to ?row_to)
-\t\t(forward_diagonally_adjacent ?role ?col_from ?row_from ?col_to ?row_to)))
+	(or (vertically_adjacent ?col_from ?row_from ?col_to ?row_to)
+		(horizontally_adjacent ?col_from ?row_from ?col_to ?row_to)
+		(forward_diagonally_adjacent ?role ?col_from ?row_from ?col_to ?row_to)))
 
 ; putting a piece in hand
 (<= (legal ?role (put ?col ?row ?piece))
 	(true (board ?col ?row empty))
-\t(true (hand ?role ?piece ?n))
-\t(true (control ?role))
-\t(distinct ?n 0))
+	(true (hand ?role ?piece ?n))
+	(true (control ?role))
+	(distinct ?n 0))
 
 ; all non-active roles can do is noop
 (<= (legal ?role noop)
 	(role ?role)
-\t(not (true (control ?role))))
+	(not (true (control ?role))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Terminal States and Goals
@@ -430,19 +430,19 @@
 
 ; winning by capturing the opponent's lion
 (<= (winner ?role)
-\t(true (hand ?role lion 1)))
+	(true (hand ?role lion 1)))
 
 ; winning by putting lion into back rank and surviving next step
 (<= (winner ?role)
-\t(true (control ?role))
-\t(true (board ?any_col ?row ?piece))
+	(true (control ?role))
+	(true (board ?any_col ?row ?piece))
 	(role_kind_piece ?role lion ?piece)
-\t(back_rank ?role ?row))
+	(back_rank ?role ?row))
 
 ; loser is the opponent of the winner
 (<= (loser ?role)
-\t(opponent ?role ?opp)
-\t(winner ?opp))
+	(opponent ?role ?opp)
+	(winner ?opp))
 
 ; whether or not there is a winner
 (<= any_winner
@@ -455,12 +455,12 @@
 
 ; a game will be terminated when anyone wins or time is up
 (<= terminal
-\t(or (winner ?role)
+	(or (winner ?role)
 		timeup))
 
 ; goal for the winner
 (<= (goal ?role 100)
-\t(winner ?role))
+	(winner ?role))
 
 ; goal for everyone when time is up
 (<= (goal ?role 50)
@@ -469,5 +469,5 @@
 
 ; goal for the loser
 (<= (goal ?role 0)
-\t(loser ?role))
+	(loser ?role))
 
