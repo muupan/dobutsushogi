@@ -11,6 +11,45 @@
 (role gote)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Possible facts
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(<= (base (board ?col ?row ?piece))
+    (col ?col)
+    (row ?row)
+    (piece ?piece))
+(<= (base (board ?col ?row empty))
+    (col ?col)
+    (row ?row))
+(<= (base (hand ?role ?kind ?piece_number))
+    (role ?role)
+    (kind ?kind)
+    (piece_number ?piece_number))
+(<= (base (control ?role))
+    (role ?role))
+(<= (base (step ?n))
+    (step_number ?n))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Possible actions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(<= (input ?role (move ?col_from ?row_from ?col_to ?row_to ?kind))
+    (role ?role)
+    (col ?col_from)
+    (row ?row_from)
+    (col ?col_to)
+    (row ?row_to)
+    (kind ?kind))
+(<= (input ?role (put ?col ?row ?kind))
+    (role ?role)
+    (col ?col)
+    (row ?row)
+    (kind ?kind))
+(<= (input ?role noop)
+    (role ?role))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Initial State
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -168,9 +207,14 @@
 (<= (own ?role ?piece)
 	(role_kind_piece ?role ?kind ?piece))
 
+
 ; order of numbers for counting pieces in hand
 (succ_number 0 1)
 (succ_number 1 2)
+
+(piece_number 0)
+(<= (piece_number ?m)
+    (succ_number ?_ ?m))
 
 ; order of steps
 (succ_step 0 1)
@@ -233,6 +277,10 @@
 (succ_step 57 58)
 (succ_step 58 59)
 (succ_step 59 60)
+
+(step_number 0)
+(<= (step_number ?m)
+    (succ_step ?_ ?m))
 
 ; definition of front row, which differes between sente and gote
 (<= (front_row sente ?row_from ?row_to)
